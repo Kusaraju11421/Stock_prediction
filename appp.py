@@ -82,7 +82,9 @@ if os.path.exists(image_path):
 
 
 
-model = load_model('Stock_Prediction_Model.keras')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(script_dir, 'Stock_Prediction_Model.keras')
+model = load_model(model_path)
 
 st.header("Stock Market Predictor")
 
