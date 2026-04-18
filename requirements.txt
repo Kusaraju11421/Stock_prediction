@@ -5,4 +5,4 @@ yfinance
 keras
 scikit-learn
 matplotlib
-tensorflow
+tensorflow-cpu
