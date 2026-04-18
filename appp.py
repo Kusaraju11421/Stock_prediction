@@ -92,7 +92,15 @@ stock = st.text_input('Enter Stock Symbol','AAPL')
 start = '2020-01-01'
 end = '2024-12-31'
 
-data = yf.download(stock,start,end)
+if not stock.strip():
+    st.warning('⚠️ Please enter a valid stock symbol (e.g. AAPL, GOOG, MSFT)')
+    st.stop()
+
+data = yf.download(stock.strip().upper(), start, end)
+
+if data.empty:
+    st.error(f'❌ No data found for symbol "{stock}". It may be delisted or the symbol is incorrect. Try AAPL, GOOG, MSFT, TSLA.')
+    st.stop()
 
 st.subheader("Stock Data")
 st.write(data)
@@ -137,17 +145,18 @@ with col2:
     buf.seek(0)
     st.image(buf, width=800) 
 with col3:
-    st.subheader("Price vs Moving Average of 100  vs 200 Days")
+    st.subheader("Price vs Moving Average of 100 vs 200 Days")
     mv_avg_200 = data.Close.rolling(200).mean()
     fig3= plt.figure(figsize=(9,5))
-    plt.plot(mv_avg_100,'black',label = 'Moving Average of 50 Days')
-    plt.plot(mv_avg_200,'blue',label = 'Moving Average of 100 Days')
+    plt.plot(mv_avg_100,'black',label = 'Moving Average of 100 Days')
+    plt.plot(mv_avg_200,'blue',label = 'Moving Average of 200 Days')
     plt.plot(data.Close,'green',label = 'Closing Price')
     plt.legend()
     buf = io.BytesIO()
     plt.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
-    st.image(buf, width=800) 
+    plt.close(fig3)
+    st.image(buf, width=800)
 
 x=[]
 y=[]
@@ -184,4 +193,4 @@ plt.close(fig4)
 # Center the image using a middle column
 col1, col2, col3 = st.columns([1, 2, 1])  # 3-column layout for centering
 with col2:
-    st.image(buf, use_container_width=True)
+    st.image(buf, use_column_width=True)
